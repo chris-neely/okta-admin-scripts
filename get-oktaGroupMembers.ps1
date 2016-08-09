@@ -10,7 +10,7 @@ Example: .\get-oktaGroupMembers.ps1 -org "tenant" -gid "0000000000" -api_token "
 #requires -version 3.0
 
 param(
-    [Parameter(Mandatory=$true)]$org, # Your org ID - Ex. tenant.okta.com
+    [Parameter(Mandatory=$true)]$org, # Your tentant prefix - Ex. tenant.okta.com
     [Parameter(Mandatory=$true)]$gid, # The group ID for the group you want to export - Ex. https://tenant-admin.okta.com/admin/group/00000000000000000000
     [Parameter(Mandatory=$true)]$api_token, # Your API Token.  You can generate this from Admin - Security - API
     [Parameter(Mandatory=$true)]$outfile # The path and file name for the resulting CSV file
