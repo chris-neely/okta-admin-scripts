@@ -4,7 +4,7 @@ Purpose: Script for exporting Okta group membership to a csv file
 Author: Chris Neely
 E-mail: chris@chrisneely.tech
 Notes: Requires PowerShell3.0 or later
-Example: .\get-oktaGroupMembers.ps1 -org "tenant" -gid "0000000000" -api_token "0000000000" -outfile "c:\scripts\groupname.csv"
+Example: .\get-oktaGroupMembers.ps1 -org "tenant.okta.com" -gid "0000000000" -api_token "0000000000" -outfile "c:\scripts\groupname.csv"
 #>
 
 #requires -version 3.0
@@ -16,25 +16,27 @@ param(
     [Parameter(Mandatory=$true)]$outfile # The path and file name for the resulting CSV file
     )
 
-### Define $allusers and $selectedUsers as empty arrays
+### Define $allusers as empty array
 $allusers = @()
-$selectedUsers = @()
+
+$headers = @{"Authorization" = "SSWS $api_token"; "Accept" = "application/json"; "Content-Type" = "application/json"}
 
 ### Set $uri as the API URI for use in the loop
-$uri = "https://$org.okta.com/api/v1/groups/$gid/users"
+$uri = "https://$org/api/v1/groups/$gid/users"
 
 ### Use a while loop and get all users from Okta API
-DO
-{
-$webrequest = Invoke-WebRequest -Headers @{"Authorization" = "SSWS $api_token"} -Method Get -Uri $uri
-$link = $webrequest.Headers.Link.Split("<").Split(">") 
-$uri = $link[3]
-$json = $webrequest | ConvertFrom-Json
-$allusers += $json
-} while ($webrequest.Headers.Link.EndsWith('rel="next"'))
+do {
+    $webresponse = Invoke-WebRequest -Headers $headers -Method Get -Uri $uri
+    $links = $webresponse.Headers.Link.Split("<").Split(">") 
+    $uri = $links[3]
+    $users = $webresponse | ConvertFrom-Json
+    $allusers += $users
+} while ($webresponse.Headers.Link.EndsWith('rel="next"'))
 
 ### Filter the results and remove any DEPROVISIONED users
 $activeUsers = $allusers | Where-Object { $_.status -ne "DEPROVISIONED" }
 
 ### Select the user profile properties we want and export to CSV
-$activeUsers | Select-Object -ExpandProperty profile | Select-Object -Property email, displayName, primaryPhone, mobilePhone, organization, department | Export-Csv -Path $outfile -NoTypeInformation
+$activeUsers | Select-Object -ExpandProperty profile | 
+    Select-Object -Property email, displayName, primaryPhone, mobilePhone, organization, department | 
+    Export-Csv -Path $outfile -NoTypeInformation
