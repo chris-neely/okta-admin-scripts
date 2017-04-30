@@ -2,7 +2,7 @@
 Name: get-oktaGroupMembers.ps1
 Purpose: Script for exporting Okta group membership to a csv file
 Author: Chris Neely
-E-mail: chris@chrisneely.tech
+E-mail: chris@neely.pro
 Notes: Requires PowerShell3.0 or later
 Example: .\get-oktaGroupMembers.ps1 -org "tenant.okta.com" -gid "0000000000" -api_token "0000000000" -outfile "c:\scripts\groupname.csv"
 #>
