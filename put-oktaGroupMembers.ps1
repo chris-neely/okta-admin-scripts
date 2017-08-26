@@ -1,10 +1,9 @@
 <#
 Name: put-oktaGroupMembers.ps1
 Purpose: Script for adding a csv file of user email addresses to an Okta group
-Author: Chris Neely
-E-mail: chris@neely.pro
+Author: chris@neely.pro
 Notes: Requires PowerShell 3.0 or later
-Example: .\put-oktaGroupMembers.ps1 -org "tenant.okta.com" -gid "0000000000" -api_token "0000000000" -path "c:\scripts\groupname.csv"
+Example: .\put-oktaGroupMembers.ps1 -org "tenant.okta.com" -gid "0000" -api_token "0000" -path "c:\scripts\groupname.csv"
 #>
 
 #requires -version 3.0
